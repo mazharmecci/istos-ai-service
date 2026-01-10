@@ -57,6 +57,7 @@ def health_check():
 # Quote Analysis (Mock AI – Phase 1)
 # ------------------------------------------------------------------
 
-@app.post("/analyze-quote", response_model=QuoteAnalysisResponse)
+@app.post("/v1/analyze-quote", response_model=QuoteAnalysisResponse)
 def analyze_quote(payload: QuoteAnalysisRequest):
     return analyze_quote_ai(payload)
+
