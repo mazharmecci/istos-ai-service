@@ -40,30 +40,8 @@ def health_check():
 # Quote Analysis (Mock AI – Phase 1)
 # ------------------------------------------------------------------
 
+from app.services.quote_analyzer import analyze_quote_ai
+
 @app.post("/analyze-quote", response_model=QuoteAnalysisResponse)
 def analyze_quote(payload: QuoteAnalysisRequest):
-    """
-    MOCK AI RESPONSE
-    This logic will be replaced with real AI inference.
-    """
-
-    deal_value = payload.quote.deal_value
-    avg_price = payload.historical_context.avg_winning_price
-
-    # Simple heuristic (temporary)
-    if deal_value < avg_price:
-        pricing_risk = "Medium"
-        win_probability = 72
-    else:
-        pricing_risk = "Low"
-        win_probability = 85
-
-    return QuoteAnalysisResponse(
-        win_probability=win_probability,
-        pricing_risk=pricing_risk,
-        key_risks=[
-            "Pricing slightly deviates from historical average",
-            "Private hospital shows moderate price sensitivity",
-        ],
-        recommended_focus="Emphasize value and service reliability over discounts",
-    )
+    return analyze_quote_ai(payload)
