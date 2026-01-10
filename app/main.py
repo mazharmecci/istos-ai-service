@@ -1,21 +1,31 @@
 from fastapi import FastAPI
 
-app = FastAPI()
-
-@app.get("/")
-def root():
-    return {"status": "ISTOS AI Service running"}
-
+from app.config import settings
 from app.schemas import (
     QuoteAnalysisRequest,
-    QuoteAnalysisResponse
+    QuoteAnalysisResponse,
 )
-from app.config import settings
+
+# ------------------------------------------------------------------
+# FastAPI App Initialization
+# ------------------------------------------------------------------
 
 app = FastAPI(
     title=settings.APP_NAME,
-    version=settings.API_VERSION
+    version=settings.API_VERSION,
 )
+
+# ------------------------------------------------------------------
+# Basic Routes
+# ------------------------------------------------------------------
+
+@app.get("/")
+def root():
+    return {
+        "status": "ISTOS AI Service running",
+        "service": settings.APP_NAME,
+        "version": settings.API_VERSION,
+    }
 
 
 @app.get("/health")
@@ -23,9 +33,12 @@ def health_check():
     return {
         "status": "ok",
         "service": settings.APP_NAME,
-        "environment": settings.ENV
+        "environment": settings.ENV,
     }
 
+# ------------------------------------------------------------------
+# AI Quote Analysis (Mock – Day 7)
+# ------------------------------------------------------------------
 
 @app.post("/analyze-quote", response_model=QuoteAnalysisResponse)
 def analyze_quote(payload: QuoteAnalysisRequest):
@@ -50,8 +63,7 @@ def analyze_quote(payload: QuoteAnalysisRequest):
         pricing_risk=pricing_risk,
         key_risks=[
             "Pricing slightly deviates from historical average",
-            "Private hospital shows moderate price sensitivity"
+            "Private hospital shows moderate price sensitivity",
         ],
-        recommended_focus="Emphasize value and service reliability over discounts"
+        recommended_focus="Emphasize value and service reliability over discounts",
     )
-
