@@ -2,6 +2,10 @@ from app.schemas import (
     QuoteAnalysisRequest,
     QuoteAnalysisResponse,
 )
+from app.core.logging import get_logger
+
+logger = get_logger("quote_analyzer")
+
 
 def analyze_quote_ai(payload: QuoteAnalysisRequest) -> QuoteAnalysisResponse:
     """
@@ -9,6 +13,11 @@ def analyze_quote_ai(payload: QuoteAnalysisRequest) -> QuoteAnalysisResponse:
     Currently heuristic-based (Phase 1).
     Replace with ML / LLM inference in later phases.
     """
+
+    logger.info(
+        "Analyzing quote",
+        extra={"deal_value": payload.quote.deal_value},
+    )
 
     deal_value = payload.quote.deal_value
     avg_price = payload.historical_context.avg_winning_price
