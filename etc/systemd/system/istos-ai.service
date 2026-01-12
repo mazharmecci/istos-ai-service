@@ -1,0 +1,15 @@
+[Unit]
+Description=ISTOS AI FastAPI Service
+After=network.target
+
+[Service]
+User=istosai
+Group=istosai
+WorkingDirectory=/opt/istos-ai-service
+Environment="PATH=/opt/istos-ai-service/venv/bin"
+ExecStart=/opt/istos-ai-service/venv/bin/gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.main:app --bind 127.0.0.1:8001
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
