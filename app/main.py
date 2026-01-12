@@ -1,48 +1,14 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
-
-from app.config import settings
+from fastapi import FastAPI
 from app.schemas import (
     QuoteAnalysisRequest,
-    QuoteAnalysisResponse,
+    QuoteAnalysisResponse
 )
-
-from app.services.quote_analyzer import analyze_quote_ai
-
-# ------------------------------------------------------------------
-# FastAPI App Initialization
-# ------------------------------------------------------------------
+from app.config import settings
 
 app = FastAPI(
     title=settings.APP_NAME,
-    version=settings.API_VERSION,
+    version=settings.API_VERSION
 )
-
-# ------------------------------------------------------------------
-# Global Exception Handler
-# ------------------------------------------------------------------
-
-@app.exception_handler(Exception)
-async def global_exception_handler(request: Request, exc: Exception):
-    return JSONResponse(
-        status_code=500,
-        content={
-            "error": "Internal server error",
-            "detail": str(exc),
-        },
-    )
-
-# ------------------------------------------------------------------
-# Root & Health Endpoints
-# ------------------------------------------------------------------
-
-@app.get("/")
-def root():
-    return {
-        "status": "ISTOS AI Service running",
-        "service": settings.APP_NAME,
-        "environment": settings.ENV,
-    }
 
 
 @app.get("/health")
@@ -50,14 +16,34 @@ def health_check():
     return {
         "status": "ok",
         "service": settings.APP_NAME,
-        "environment": settings.ENV,
+        "environment": settings.ENV
     }
 
-# ------------------------------------------------------------------
-# Quote Analysis (Mock AI – Phase 1)
-# ------------------------------------------------------------------
 
-@app.post("/v1/analyze-quote", response_model=QuoteAnalysisResponse)
+@app.post("/analyze-quote", response_model=QuoteAnalysisResponse)
 def analyze_quote(payload: QuoteAnalysisRequest):
-    return analyze_quote_ai(payload)
+    """
+    MOCK AI RESPONSE – Day 7 only
+    This will be replaced by real AI logic later.
+    """
 
+    deal_value = payload.quote.deal_value
+    avg_price = payload.historical_context.avg_winning_price
+
+    # Simple heuristic (temporary)
+    if deal_value < avg_price:
+        pricing_risk = "Medium"
+        win_probability = 72
+    else:
+        pricing_risk = "Low"
+        win_probability = 85
+
+    return QuoteAnalysisResponse(
+        win_probability=win_probability,
+        pricing_risk=pricing_risk,
+        key_risks=[
+            "Pricing slightly deviates from historical average",
+            "Private hospital shows moderate price sensitivity"
+        ],
+        recommended_focus="Emphasize value and service reliability over discounts"
+    )
