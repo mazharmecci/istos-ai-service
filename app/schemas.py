@@ -1,9 +1,6 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List, Optional
 
-# ----------------------------
-# Quote and Historical Context
-# ----------------------------
 
 class QuoteItem(BaseModel):
     item_id: str
@@ -11,28 +8,28 @@ class QuoteItem(BaseModel):
     unit_price: float
     description: Optional[str] = None
 
+
 class Quote(BaseModel):
     deal_value: float
     hospital: str
     instrument_category: str
     configuration_complexity: str
-    items: Optional[List[QuoteItem]] = []
+    items: List[QuoteItem] = []
+
 
 class HistoricalContext(BaseModel):
     avg_winning_price: float
-    similar_quotes_won: Optional[int] = 0
-    similar_quotes_lost: Optional[int] = 0
+    similar_quotes_won: int = 0
+    similar_quotes_lost: int = 0
 
-# ----------------------------
-# Request & Response Schemas
-# ----------------------------
 
-class QuoteAnalysisRequest(BaseModel):
+class AnalyzeQuoteRequest(BaseModel):
     quote: Quote
     historical_context: HistoricalContext
 
-class QuoteAnalysisResponse(BaseModel):
-    win_probability: int = Field(..., ge=0, le=100)
+
+class AnalyzeQuoteResponse(BaseModel):
+    win_probability: int
     pricing_risk: str
     key_risks: List[str]
     recommended_focus: str
