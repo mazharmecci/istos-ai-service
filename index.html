@@ -1,38 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Test ISTOS AI</title>
+  <meta charset="UTF-8">
+  <title>ISTOS AI Quote Analyzer</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 50px auto; line-height: 1.6; }
+    h1 { color: #1a73e8; }
+    textarea { width: 100%; height: 100px; margin-bottom: 10px; font-size: 14px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    pre { background: #f1f1f1; padding: 15px; border-radius: 5px; overflow-x: auto; }
+  </style>
 </head>
 <body>
-    <h1>Test AI Service</h1>
-    <textarea id="quoteText" placeholder="Enter quote here"></textarea><br>
-    <button onclick="sendQuote()">Send to AI</button>
-    <pre id="response"></pre>
 
-    <script>
-        async function sendQuote() {
-            const quote = document.getElementById("quoteText").value;
+  <h1>ISTOS AI Quote Analyzer</h1>
+  <p>Enter a quote to analyze:</p>
 
-            const payload = {
-                quote: { text: quote, author: "Mazhar Mecci", category: "Histopathology" },
-                historical_context: "Previous orders, client requests, and relevant laboratory details go here",
-                metadata: { request_id: "test123", timestamp: new Date().toISOString() }
-            };
+  <textarea id="quoteText" placeholder="Enter your quote here"></textarea><br>
+  <button onclick="sendQuote()">Analyze Quote</button>
 
-            const responseElement = document.getElementById("response");
+  <h2>AI Response:</h2>
+  <pre id="response">No response yet.</pre>
 
-            try {
-                const res = await fetch("https://ai.istosmedical.com/analyze-quote", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-                const data = await res.json();
-                responseElement.textContent = JSON.stringify(data, null, 2);
-            } catch (err) {
-                responseElement.textContent = "Error: " + err;
-            }
+  <script>
+    async function sendQuote() {
+      const quote = document.getElementById("quoteText").value;
+      const responseElement = document.getElementById("response");
+
+      if (!quote) {
+        responseElement.textContent = "Please enter a quote first.";
+        return;
+      }
+
+      // Payload must match your FastAPI model
+      const payload = {
+        quote: { text: quote, author: "Mazhar Mecci", category: "Histopathology" },
+        historical_context: "Previous orders, client requests, and relevant laboratory details go here",
+        metadata: { request_id: "test123", timestamp: new Date().toISOString() }
+      };
+
+      try {
+        const res = await fetch("https://ai.istosmedical.com/analyze-quote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          responseElement.textContent = "Error: " + res.status + " " + res.statusText;
+          return;
         }
-    </script>
+
+        const data = await res.json();
+        responseElement.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        responseElement.textContent = "Error: " + err;
+      }
+    }
+  </script>
+
 </body>
 </html>
