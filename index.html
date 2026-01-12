@@ -1,1 +1,38 @@
-<body><h1>AI ISTOS Medical</h1></body>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test ISTOS AI</title>
+</head>
+<body>
+    <h1>Test AI Service</h1>
+    <textarea id="quoteText" placeholder="Enter quote here"></textarea><br>
+    <button onclick="sendQuote()">Send to AI</button>
+    <pre id="response"></pre>
+
+    <script>
+        async function sendQuote() {
+            const quote = document.getElementById("quoteText").value;
+
+            const payload = {
+                quote: { text: quote, author: "Mazhar Mecci", category: "Histopathology" },
+                historical_context: "Previous orders, client requests, and relevant laboratory details go here",
+                metadata: { request_id: "test123", timestamp: new Date().toISOString() }
+            };
+
+            const responseElement = document.getElementById("response");
+
+            try {
+                const res = await fetch("https://ai.istosmedical.com/analyze-quote", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                responseElement.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                responseElement.textContent = "Error: " + err;
+            }
+        }
+    </script>
+</body>
+</html>
