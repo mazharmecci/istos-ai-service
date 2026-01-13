@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.schemas import QuoteAnalysisRequest, QuoteAnalysisResponse
 from app.config import settings
-
 
 def create_app() -> FastAPI:
     app = FastAPI(
@@ -32,12 +30,6 @@ def create_app() -> FastAPI:
             "environment": settings.ENV,
         }
 
-    # Example AI route (hook up when ready)
-    # @app.post("/analyze-quote", response_model=QuoteAnalysisResponse)
-    # def analyze_quote(payload: QuoteAnalysisRequest) -> QuoteAnalysisResponse:
-    #     ...
-
     return app
-
 
 app = create_app()
